@@ -1,0 +1,125 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "Jakie jest stolica Polski?",
+      "answers": ["Warszawa", "Kraków", "Gdańsk", "Wrocław"],
+      "correctAnswer": 0,
+      "lvl": 1,
+      "voiceFile": "question_1.mp3"
+    },
+    {
+      "id": 2,
+      "question": "Ile planet jest w Układzie Słonecznym?",
+      "answers": ["7", "8", "9", "10"],
+      "correctAnswer": 1,
+      "lvl": 1,
+      "voiceFile": "question_2.mp3"
+    },
+    {
+      "id": 3,
+      "question": "Który pierwiastek chemiczny ma symbol 'Au'?",
+      "answers": ["Srebro", "Złoto", "Miedź", "Platyna"],
+      "correctAnswer": 1,
+      "lvl": 1,
+      "voiceFile": "question_3.mp3"
+    },
+    {
+      "id": 4,
+      "question": "W którym roku zakończyła się II wojna światowa?",
+      "answers": ["1944", "1945", "1946", "1947"],
+      "correctAnswer": 1,
+      "lvl": 1,
+      "voiceFile": "question_4.mp3"
+    },
+    {
+      "id": 5,
+      "question": "Kto napisał 'Pana Tadeusza'?",
+      "answers": ["Juliusz Słowacki", "Adam Mickiewicz", "Zygmunt Krasiński", "Cyprian Norwid"],
+      "correctAnswer": 1,
+      "lvl": 2,
+      "voiceFile": "question_5.mp3"
+    },
+    {
+      "id": 6,
+      "question": "Jaka jest najdłuższa rzeka w Polsce?",
+      "answers": ["Wisła", "Odra", "Warta", "Bug"],
+      "correctAnswer": 0,
+      "lvl": 2,
+      "voiceFile": "question_6.mp3"
+    },
+    {
+      "id": 7,
+      "question": "Który ocean jest największy?",
+      "answers": ["Atlantycki", "Indyjski", "Spokojny", "Arktyczny"],
+      "correctAnswer": 2,
+      "lvl": 2,
+      "voiceFile": "question_7.mp3"
+    },
+    {
+      "id": 8,
+      "question": "Ile wynosi prędkość światła w próżni (w przybliżeniu)?",
+      "answers": ["300 000 km/s", "150 000 km/s", "450 000 km/s", "600 000 km/s"],
+      "correctAnswer": 0,
+      "lvl": 2,
+      "voiceFile": "question_8.mp3"
+    },
+    {
+      "id": 9,
+      "question": "Który kompozytor napisał 'Cztery pory roku'?",
+      "answers": ["Wolfgang Amadeus Mozart", "Antonio Vivaldi", "Ludwig van Beethoven", "Johann Sebastian Bach"],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_9.mp3"
+    },
+    {
+      "id": 10,
+      "question": "Jaka jest najwyższa góra na świecie?",
+      "answers": ["K2", "Mount Everest", "Kangchenjunga", "Lhotse"],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_10.mp3"
+    },
+    {
+      "id": 11,
+      "question": "Który pierwiastek jest najlżejszy?",
+      "answers": ["Hel", "Wodór", "Lit", "Beryl"],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_11.mp3"
+    },
+    {
+      "id": 12,
+      "question": "W którym roku odbyła się bitwa pod Grunwaldem?",
+      "answers": ["1409", "1410", "1411", "1412"],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_12.mp3"
+    },
+    {
+      "id": 13,
+      "question": "Który malarz namalował 'Gwiaździstą noc'?",
+      "answers": ["Pablo Picasso", "Vincent van Gogh", "Claude Monet", "Salvador Dalí"],
+      "correctAnswer": 1,
+      "lvl": 4,
+      "voiceFile": "question_13.mp3"
+    },
+    {
+      "id": 14,
+      "question": "Jaka jest wartość liczby Pi do dwóch miejsc po przecinku?",
+      "answers": ["3.12", "3.14", "3.16", "3.18"],
+      "correctAnswer": 1,
+      "lvl": 4,
+      "voiceFile": "question_14.mp3"
+    },
+    {
+      "id": 15,
+      "question": "Która planeta jest najbliższa Słońcu?",
+      "answers": ["Wenus", "Merkury", "Ziemia", "Mars"],
+      "correctAnswer": 1,
+      "lvl": 4,
+      "voiceFile": "question_15.mp3"
+    }
+  ]
+}
+
