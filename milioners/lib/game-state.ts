@@ -10,6 +10,9 @@ export interface GameState {
   currentRound: number;
   currentQuestion: Question | null;
   selectedAnswer: number | null;
+  answerConfirmed: boolean; // Whether answer has been confirmed
+  isAnswerCorrect: boolean | null; // null = not confirmed, true = correct, false = wrong
+  visibleAnswers: number[]; // Which answer indices are visible
   usedQuestionIds: number[];
   usedLifelines: LifelineType[];
   fiftyFiftyRemovedAnswers: number[]; // Indices of removed answers
@@ -30,6 +33,9 @@ export function createInitialGameState(): GameState {
     currentRound: 0,
     currentQuestion: null,
     selectedAnswer: null,
+    answerConfirmed: false,
+    isAnswerCorrect: null,
+    visibleAnswers: [],
     usedQuestionIds: [],
     usedLifelines: [],
     fiftyFiftyRemovedAnswers: [],
@@ -52,6 +58,10 @@ export function startGame(state: GameState): GameState {
   if (newState.currentQuestion) {
     newState.usedQuestionIds.push(newState.currentQuestion.id);
   }
+  newState.visibleAnswers = [];
+  newState.selectedAnswer = null;
+  newState.answerConfirmed = false;
+  newState.isAnswerCorrect = null;
   return newState;
 }
 
@@ -67,29 +77,20 @@ export function confirmAnswer(state: GameState): GameState {
   }
 
   const newState = { ...state };
-  const isCorrect = state.selectedAnswer === state.currentQuestion.correctAnswer;
+  const isCorrect = newState.selectedAnswer === newState.currentQuestion.correctAnswer;
+  
+  // Mark answer as confirmed and store correctness
+  newState.answerConfirmed = true;
+  newState.isAnswerCorrect = isCorrect;
 
   if (isCorrect) {
-    // Move to next round
+    // Move to next round after a delay (handled by UI)
     if (newState.currentRound >= 15) {
       // Won the game!
       newState.status = 'won';
       newState.finalPrize = getPrizeForRound(15);
     } else {
-      newState.currentRound += 1;
-      newState.currentQuestion = getQuestionForRound(newState.currentRound, newState.usedQuestionIds);
-      if (newState.currentQuestion) {
-        newState.usedQuestionIds.push(newState.currentQuestion.id);
-      }
-      newState.selectedAnswer = null;
-      newState.fiftyFiftyRemovedAnswers = [];
-      newState.audienceVoteActive = false;
-      newState.audienceVoteResults = null;
-      newState.showAudienceResults = false;
-      newState.friendActive = false;
-      newState.challengeActive = false;
-      newState.challengeSelectedNumber = null;
-      newState.challengeAccepted = null;
+      // Will move to next round after delay
     }
   } else {
     // Wrong answer - game over
@@ -97,6 +98,44 @@ export function confirmAnswer(state: GameState): GameState {
     newState.finalPrize = getPrizeForRound(newState.currentRound - 1);
   }
 
+  return newState;
+}
+
+export function moveToNextRound(state: GameState): GameState {
+  const newState = { ...state };
+  newState.currentRound += 1;
+  newState.currentQuestion = getQuestionForRound(newState.currentRound, newState.usedQuestionIds);
+  if (newState.currentQuestion) {
+    newState.usedQuestionIds.push(newState.currentQuestion.id);
+  }
+  newState.selectedAnswer = null;
+  newState.answerConfirmed = false;
+  newState.isAnswerCorrect = null;
+  newState.visibleAnswers = [];
+  newState.fiftyFiftyRemovedAnswers = [];
+  newState.audienceVoteActive = false;
+  newState.audienceVoteResults = null;
+  newState.showAudienceResults = false;
+  newState.friendActive = false;
+  newState.challengeActive = false;
+  newState.challengeSelectedNumber = null;
+  newState.challengeAccepted = null;
+  return newState;
+}
+
+export function showNextAnswer(state: GameState): GameState {
+  if (!state.currentQuestion) {
+    return state;
+  }
+
+  const newState = { ...state };
+  const totalAnswers = state.currentQuestion.answers.length;
+  
+  // Show next answer if not all are visible
+  if (newState.visibleAnswers.length < totalAnswers) {
+    newState.visibleAnswers.push(newState.visibleAnswers.length);
+  }
+  
   return newState;
 }
 
@@ -152,27 +191,11 @@ export function acceptChallenge(state: GameState): GameState {
     newState.challengeActive = false;
     newState.challengeSelectedNumber = null;
     newState.challengeAccepted = null;
+    return newState;
   } else {
     // Move to next round
-    newState.currentRound += 1;
-    newState.currentQuestion = getQuestionForRound(newState.currentRound, newState.usedQuestionIds);
-    if (newState.currentQuestion) {
-      newState.usedQuestionIds.push(newState.currentQuestion.id);
-    }
-    // Reset all question-related state
-    newState.selectedAnswer = null;
-    newState.fiftyFiftyRemovedAnswers = [];
-    newState.audienceVoteActive = false;
-    newState.audienceVoteResults = null;
-    newState.showAudienceResults = false;
-    newState.friendActive = false;
-    // Reset challenge state for next question
-    newState.challengeActive = false;
-    newState.challengeSelectedNumber = null;
-    newState.challengeAccepted = null;
+    return moveToNextRound(newState);
   }
-  
-  return newState;
 }
 
 export function toggleAudienceResults(state: GameState): GameState {
@@ -185,6 +208,27 @@ export function rejectChallenge(state: GameState): GameState {
   const newState = { ...state };
   newState.challengeAccepted = false;
   newState.challengeActive = false;
+  return newState;
+}
+
+export function endGame(state: GameState): GameState {
+  const newState = { ...state };
+  newState.status = 'lost';
+  
+  // Calculate final prize based on current round
+  // If on a safe haven (round 5 or 10), player keeps that prize
+  // Otherwise, player keeps the prize from previous round
+  if (newState.currentRound === 5 || newState.currentRound === 10) {
+    // Safe haven - keep current round prize
+    newState.finalPrize = getPrizeForRound(newState.currentRound);
+  } else if (newState.currentRound > 0) {
+    // Keep previous round prize
+    newState.finalPrize = getPrizeForRound(newState.currentRound - 1);
+  } else {
+    // Game ended before first question
+    newState.finalPrize = 0;
+  }
+  
   return newState;
 }
 

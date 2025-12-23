@@ -93,6 +93,20 @@ export default function HostPage() {
     }
   };
 
+  const handleShowNextAnswer = async () => {
+    try {
+      const response = await fetch('/api/game-state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'showNextAnswer' }),
+      });
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error showing next answer:', error);
+    }
+  };
+
   const handleSelectAnswer = async (index: number) => {
     try {
       const response = await fetch('/api/game-state', {
@@ -116,6 +130,19 @@ export default function HostPage() {
       });
       const data = await response.json();
       setGameState(data);
+      
+      // If answer is correct and game continues, move to next round after delay
+      if (data.isAnswerCorrect && data.status === 'in_progress') {
+        setTimeout(async () => {
+          const nextResponse = await fetch('/api/game-state', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'moveToNextRound' }),
+          });
+          const nextData = await nextResponse.json();
+          setGameState(nextData);
+        }, 3000); // 3 second delay to show correct answer
+      }
     } catch (error) {
       console.error('Error confirming answer:', error);
     }
@@ -206,6 +233,24 @@ export default function HostPage() {
     }
   };
 
+  const handleEndGame = async () => {
+    if (!confirm('Czy na pewno chcesz zakończyć grę? Gracz otrzyma pulę zgodnie z aktualnym poziomem.')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/game-state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'endGame' }),
+      });
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error ending game:', error);
+    }
+  };
+
   const getVotingUrl = () => {
     if (!gameState?.gameId) return '';
     if (typeof window === 'undefined') return '';
@@ -247,9 +292,19 @@ export default function HostPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6 bg-blue-900 text-white p-4 rounded-lg">
-          <h1 className="text-2xl font-bold">Panel Prowadzącego</h1>
-          <p className="text-sm">Status: {gameState.status === 'in_progress' ? 'W trakcie' : gameState.status}</p>
+        <div className="mb-6 bg-blue-900 text-white p-4 rounded-lg flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Panel Prowadzącego</h1>
+            <p className="text-sm">Status: {gameState.status === 'in_progress' ? 'W trakcie' : gameState.status}</p>
+          </div>
+          {gameState.status === 'in_progress' && (
+            <button
+              onClick={handleEndGame}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+            >
+              Zakończ Grę
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -260,16 +315,37 @@ export default function HostPage() {
               round={gameState.currentRound}
             />
 
+            {/* Show answers button */}
+            {gameState.currentQuestion && 
+             gameState.visibleAnswers.length < gameState.currentQuestion.answers.length && 
+             !gameState.answerConfirmed && 
+             gameState.status === 'in_progress' && (
+              <div className="bg-blue-100 border-2 border-blue-500 rounded-lg p-4">
+                <button
+                  onClick={handleShowNextAnswer}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-xl"
+                >
+                  Pokaż odpowiedź {gameState.visibleAnswers.length + 1}
+                </button>
+              </div>
+            )}
+
             <AnswerButtons
               answers={gameState.currentQuestion?.answers || []}
               selectedAnswer={gameState.selectedAnswer}
               onSelectAnswer={handleSelectAnswer}
               fiftyFiftyRemovedAnswers={gameState.fiftyFiftyRemovedAnswers}
-              disabled={gameState.status !== 'in_progress'}
+              visibleAnswers={gameState.visibleAnswers}
+              answerConfirmed={gameState.answerConfirmed}
+              isAnswerCorrect={gameState.isAnswerCorrect}
+              correctAnswerIndex={gameState.currentQuestion?.correctAnswer ?? null}
+              disabled={gameState.status !== 'in_progress' || gameState.answerConfirmed}
             />
 
             {/* Answer confirmation */}
-            {gameState.selectedAnswer !== null && gameState.status === 'in_progress' && (
+            {gameState.selectedAnswer !== null && 
+             !gameState.answerConfirmed && 
+             gameState.status === 'in_progress' && (
               <div className="bg-yellow-100 border-2 border-yellow-500 rounded-lg p-4">
                 <p className="text-center mb-4 font-semibold">
                   Zaznaczona odpowiedź: {['A', 'B', 'C', 'D'][gameState.selectedAnswer]}
@@ -287,7 +363,11 @@ export default function HostPage() {
             <Lifelines
               usedLifelines={gameState.usedLifelines}
               onUseLifeline={handleUseLifeline}
-              disabled={gameState.status !== 'in_progress'}
+              disabled={
+                gameState.status !== 'in_progress' ||
+                !gameState.currentQuestion ||
+                gameState.visibleAnswers.length < gameState.currentQuestion.answers.length
+              }
             />
 
             {/* Audience vote - QR Code or Results */}
@@ -390,4 +470,5 @@ export default function HostPage() {
     </div>
   );
 }
+
 

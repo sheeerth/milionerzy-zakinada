@@ -40,19 +40,6 @@ export default function GamePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleUseLifeline = async (lifeline: string) => {
-    try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'useLifeline', lifeline }),
-      });
-      const data = await response.json();
-      setGameState(data);
-    } catch (error) {
-      console.error('Error using lifeline:', error);
-    }
-  };
 
   if (loading) {
     return (
@@ -154,13 +141,17 @@ export default function GamePage() {
               selectedAnswer={gameState.selectedAnswer}
               onSelectAnswer={() => {}} // Answers are selected by host
               fiftyFiftyRemovedAnswers={gameState.fiftyFiftyRemovedAnswers}
+              visibleAnswers={gameState.visibleAnswers}
+              answerConfirmed={gameState.answerConfirmed}
+              isAnswerCorrect={gameState.isAnswerCorrect}
+              correctAnswerIndex={gameState.currentQuestion?.correctAnswer ?? null}
               disabled={true}
             />
             <div className="mt-8">
               <Lifelines
                 usedLifelines={gameState.usedLifelines}
-                onUseLifeline={handleUseLifeline}
-                disabled={gameState.status !== 'in_progress'}
+                onUseLifeline={() => {}} // Koła ratunkowe nie są klikalne na ekranie gry
+                disabled={true} // Zawsze wyłączone - tylko informacja
               />
             </div>
 
