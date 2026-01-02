@@ -27,16 +27,16 @@ export function getRandomQuestionByLevel(level: number, usedQuestionIds: number[
 }
 
 export function getQuestionForRound(round: number, usedQuestionIds: number[] = []): Question | null {
-  // Round 1-4: level 1
-  // Round 5-8: level 2
-  // Round 9-12: level 3
-  // Round 13-15: level 4
+  // Round 1-3: level 1
+  // Round 4-6: level 2
+  // Round 7-9: level 3
+  // Round 10-12: level 4
   let level: number;
-  if (round <= 4) {
+  if (round <= 3) {
     level = 1;
-  } else if (round <= 8) {
+  } else if (round <= 6) {
     level = 2;
-  } else if (round <= 12) {
+  } else if (round <= 9) {
     level = 3;
   } else {
     level = 4;
@@ -46,21 +46,18 @@ export function getQuestionForRound(round: number, usedQuestionIds: number[] = [
 }
 
 export const PRIZE_LEVELS = [
-  500,
-  1000,
-  2000,
-  5000,
-  10000,
-  20000,
-  40000,
-  75000,
-  125000,
-  250000,
-  500000,
-  750000,
-  1000000,
-  1500000,
-  2000000
+  1000,    // Round 1
+  2000,    // Round 2 - safe haven
+  5000,    // Round 3
+  10000,   // Round 4
+  15000,   // Round 5
+  25000,   // Round 6
+  50000,   // Round 7 - safe haven
+  75000,   // Round 8
+  125000,  // Round 9
+  250000,  // Round 10
+  500000,  // Round 11
+  1000000  // Round 12
 ];
 
 export function getPrizeForRound(round: number): number {
@@ -72,9 +69,20 @@ export function getPrizeForRound(round: number): number {
 }
 
 export function getGuaranteedPrize(round: number): number {
-  // Safe havens: round 5 (10,000), round 10 (250,000)
-  if (round >= 10) return 250000;
-  if (round >= 5) return 10000;
+  // Safe havens: round 2 (2,000), round 7 (50,000)
+  if (round >= 7) return 50000;
+  if (round >= 2) return 2000;
+  return 0;
+}
+
+export function getSafeHavenPrize(round: number): number {
+  // Returns the safe haven prize for the given round
+  // Safe havens are at rounds 2 and 7
+  // If round is 7 or higher, return 50,000 (round 7 prize)
+  // If round is 2 or higher (but less than 7), return 2,000 (round 2 prize)
+  // Otherwise return 0
+  if (round >= 7) return 50000;
+  if (round >= 2) return 2000;
   return 0;
 }
 

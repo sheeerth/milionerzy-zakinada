@@ -21,8 +21,8 @@ export default function Lifelines({
   disabled = false,
 }: LifelinesProps) {
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h3 className="text-xl font-bold mb-4 text-center">Koła Ratunkowe</h3>
+    <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] p-6 rounded-xl shadow-2xl border-2 border-[#FFD700]/50">
+      <h3 className="text-2xl font-black mb-6 text-center text-[#FFD700] tracking-wider uppercase">Koła Ratunkowe</h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Object.entries(lifelineConfig).map(([key, config]) => {
           const lifeline = key as LifelineType;
@@ -33,15 +33,15 @@ export default function Lifelines({
               key={key}
               onClick={() => !disabled && !isUsed && onUseLifeline(lifeline)}
               disabled={disabled || isUsed}
-              className={`p-4 rounded-lg font-semibold transition-all ${
+              className={`p-6 rounded-xl font-black transition-all ${
                 isUsed
-                  ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 transform hover:scale-105'
+                  ? 'bg-gray-800 text-gray-600 cursor-not-allowed opacity-30 border-2 border-gray-700'
+                  : 'bg-gradient-to-br from-[#FFD700] to-[#FFA500] text-black hover:from-[#FFE55C] hover:to-[#FFD700] transform hover:scale-110 active:scale-95 border-2 border-[#FFE55C] shadow-[0_0_20px_rgba(255,215,0,0.5)]'
               }`}
             >
-              <div className="text-3xl mb-2">{config.icon}</div>
-              <div className="text-sm">{config.label}</div>
-              {isUsed && <div className="text-xs mt-1">Użyte</div>}
+              <div className="text-4xl mb-3">{config.icon}</div>
+              <div className="text-sm font-bold">{config.label}</div>
+              {isUsed && <div className="text-xs mt-2 font-bold">UŻYTE</div>}
             </button>
           );
         })}

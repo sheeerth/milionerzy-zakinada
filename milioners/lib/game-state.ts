@@ -1,8 +1,8 @@
-import { Question, getQuestionForRound, getPrizeForRound } from './questions';
+import { Question, getQuestionForRound, getPrizeForRound, getSafeHavenPrize } from './questions';
 import { v4 as uuidv4 } from 'uuid';
 
 export type LifelineType = 'fiftyFifty' | 'audience' | 'friend' | 'challenge';
-export type GameStatus = 'not_started' | 'in_progress' | 'won' | 'lost';
+export type GameStatus = 'not_started' | 'intro' | 'in_progress' | 'won' | 'lost';
 
 export interface GameState {
   gameId: string;
@@ -52,6 +52,20 @@ export function createInitialGameState(): GameState {
 
 export function startGame(state: GameState): GameState {
   const newState = { ...state };
+  // Start with intro screen
+  newState.status = 'intro';
+  newState.currentRound = 0;
+  newState.currentQuestion = null;
+  newState.visibleAnswers = [];
+  newState.selectedAnswer = null;
+  newState.answerConfirmed = false;
+  newState.isAnswerCorrect = null;
+  return newState;
+}
+
+export function startFirstQuestion(state: GameState): GameState {
+  const newState = { ...state };
+  // Move from intro to first question
   newState.status = 'in_progress';
   newState.currentRound = 1;
   newState.currentQuestion = getQuestionForRound(1, []);
@@ -77,7 +91,8 @@ export function confirmAnswer(state: GameState): GameState {
   }
 
   const newState = { ...state };
-  const isCorrect = newState.selectedAnswer === newState.currentQuestion.correctAnswer;
+  // We know currentQuestion is not null due to check above
+  const isCorrect = newState.selectedAnswer === newState.currentQuestion!.correctAnswer;
   
   // Mark answer as confirmed and store correctness
   newState.answerConfirmed = true;
@@ -85,17 +100,18 @@ export function confirmAnswer(state: GameState): GameState {
 
   if (isCorrect) {
     // Move to next round after a delay (handled by UI)
-    if (newState.currentRound >= 15) {
+    if (newState.currentRound >= 12) {
       // Won the game!
       newState.status = 'won';
-      newState.finalPrize = getPrizeForRound(15);
+      newState.finalPrize = getPrizeForRound(12);
     } else {
       // Will move to next round after delay
     }
   } else {
     // Wrong answer - game over
+    // Player gets the safe haven prize (not the prize from previous round)
     newState.status = 'lost';
-    newState.finalPrize = getPrizeForRound(newState.currentRound - 1);
+    newState.finalPrize = getSafeHavenPrize(newState.currentRound);
   }
 
   return newState;
@@ -183,10 +199,10 @@ export function acceptChallenge(state: GameState): GameState {
   newState.challengeActive = false;
   
   // Auto-pass the question - move to next round
-  if (newState.currentRound >= 15) {
+  if (newState.currentRound >= 12) {
     // Won the game!
     newState.status = 'won';
-    newState.finalPrize = getPrizeForRound(15);
+    newState.finalPrize = getPrizeForRound(12);
     // Reset challenge state
     newState.challengeActive = false;
     newState.challengeSelectedNumber = null;
@@ -215,15 +231,19 @@ export function endGame(state: GameState): GameState {
   const newState = { ...state };
   newState.status = 'lost';
   
-  // Calculate final prize based on current round
-  // If on a safe haven (round 5 or 10), player keeps that prize
-  // Otherwise, player keeps the prize from previous round
-  if (newState.currentRound === 5 || newState.currentRound === 10) {
-    // Safe haven - keep current round prize
-    newState.finalPrize = getPrizeForRound(newState.currentRound);
-  } else if (newState.currentRound > 0) {
-    // Keep previous round prize
-    newState.finalPrize = getPrizeForRound(newState.currentRound - 1);
+  // Calculate final prize when player withdraws
+  // Player keeps the prize they have won (current round prize if they answered correctly)
+  // If they haven't answered the current question yet, they keep the previous round prize
+  if (newState.currentRound > 0) {
+    // If answer was confirmed and correct, player keeps current round prize
+    // Otherwise, player keeps previous round prize
+    if (newState.answerConfirmed && newState.isAnswerCorrect === true) {
+      // Player answered correctly - they keep the current round prize
+      newState.finalPrize = getPrizeForRound(newState.currentRound);
+    } else {
+      // Player withdraws before answering or after wrong answer - keep previous round prize
+      newState.finalPrize = getPrizeForRound(newState.currentRound - 1);
+    }
   } else {
     // Game ended before first question
     newState.finalPrize = 0;

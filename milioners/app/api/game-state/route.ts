@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GameState, createInitialGameState, startGame, selectAnswer, confirmAnswer, moveToNextRound, showNextAnswer, useLifeline, setAudienceVoteResults, setChallengeNumber, acceptChallenge, rejectChallenge, toggleAudienceResults, endGame } from '@/lib/game-state';
+import { GameState, createInitialGameState, startGame, startFirstQuestion, selectAnswer, confirmAnswer, moveToNextRound, showNextAnswer, useLifeline, setAudienceVoteResults, setChallengeNumber, acceptChallenge, rejectChallenge, toggleAudienceResults, endGame } from '@/lib/game-state';
 
 // In-memory game state storage
 // In production, this should be in a database or Redis
@@ -24,6 +24,10 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'start':
         gameState = startGame(gameState);
+        break;
+      
+      case 'startFirstQuestion':
+        gameState = startFirstQuestion(gameState);
         break;
       
       case 'selectAnswer':

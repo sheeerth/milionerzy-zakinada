@@ -28,43 +28,51 @@ export default function AnswerButtons({
   const getButtonColor = (index: number): string => {
     // If answer is removed by 50/50
     if (fiftyFiftyRemovedAnswers.includes(index)) {
-      return 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50';
+      return 'bg-gray-800 text-gray-600 cursor-not-allowed opacity-30 border-2 border-gray-700';
     }
 
     // If answer is confirmed
     if (answerConfirmed) {
       if (index === correctAnswerIndex) {
-        // Correct answer - green
-        return 'bg-green-600 text-white';
+        // Correct answer - green with glow
+        return 'bg-gradient-to-r from-green-600 to-green-500 text-white border-2 border-green-400 shadow-[0_0_30px_rgba(34,197,94,0.8)]';
       } else if (index === selectedAnswer && !isAnswerCorrect) {
         // Wrong selected answer - red
-        return 'bg-red-600 text-white';
+        return 'bg-gradient-to-r from-red-600 to-red-500 text-white border-2 border-red-400 shadow-[0_0_30px_rgba(239,68,68,0.8)]';
       } else {
-        // Other answers - gray
-        return 'bg-gray-400 text-gray-600';
+        // Other answers - dark gray
+        return 'bg-gray-800 text-gray-500 border-2 border-gray-700';
       }
     }
 
-    // If answer is selected but not confirmed - yellow
+    // If answer is selected but not confirmed - gold with glow
     if (selectedAnswer === index) {
-      return 'bg-yellow-500 text-white';
+      return 'bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black border-4 border-[#FFE55C] shadow-[0_0_40px_rgba(255,215,0,0.9)] glow-gold font-black';
     }
 
-    // Default - uniform color (blue-gray)
-    return 'bg-blue-500 hover:bg-blue-600 text-white';
+    // Default - gold buttons like in the show
+    return 'bg-gradient-to-r from-[#001a4d] to-[#000428] hover:from-[#FFD700] hover:to-[#FFA500] text-white border-2 border-[#FFD700]/50 hover:border-[#FFD700] hover:text-black transition-all duration-300';
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {answers.map((answer, index) => {
         const isVisible = visibleAnswers.includes(index);
         const isRemoved = fiftyFiftyRemovedAnswers.includes(index);
         const isSelected = selectedAnswer === index;
         const isDisabled = disabled || !isVisible || isRemoved || answerConfirmed;
 
+        // Show placeholder for answers not yet revealed
         if (!isVisible && !isRemoved) {
-          // Answer not yet revealed
-          return null;
+          return (
+            <div
+              key={index}
+              className="bg-gradient-to-r from-[#001a4d] to-[#000428] border-2 border-[#FFD700]/30 p-8 rounded-xl text-2xl md:text-3xl font-black opacity-50 flex items-center justify-center"
+            >
+              <span className="mr-6 font-black text-3xl md:text-4xl text-[#FFD700]/50">{answerLabels[index]}</span>
+              <span className="text-gray-500 italic">Odpowiedź {index + 1}</span>
+            </div>
+          );
         }
 
         return (
@@ -72,12 +80,12 @@ export default function AnswerButtons({
             key={index}
             onClick={() => !isDisabled && onSelectAnswer(index)}
             disabled={isDisabled}
-            className={`${getButtonColor(index)} p-6 rounded-lg text-xl font-semibold transition-all transform ${
-              !isDisabled && !answerConfirmed ? 'hover:scale-105' : ''
-            } ${isSelected && !answerConfirmed ? 'ring-4 ring-white ring-offset-2 ring-offset-gray-800' : ''}`}
+            className={`${getButtonColor(index)} p-8 rounded-xl text-2xl md:text-3xl font-black transition-all transform ${
+              !isDisabled && !answerConfirmed ? 'hover:scale-105 active:scale-95' : ''
+            } ${isSelected && !answerConfirmed ? 'scale-105' : ''}`}
           >
-            <span className="mr-4 font-bold">{answerLabels[index]}</span>
-            {answer}
+            <span className="mr-6 font-black text-3xl md:text-4xl">{answerLabels[index]}</span>
+            <span className="leading-tight">{answer}</span>
           </button>
         );
       })}

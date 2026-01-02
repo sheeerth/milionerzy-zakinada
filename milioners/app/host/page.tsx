@@ -130,21 +130,50 @@ export default function HostPage() {
       });
       const data = await response.json();
       setGameState(data);
-      
-      // If answer is correct and game continues, move to next round after delay
-      if (data.isAnswerCorrect && data.status === 'in_progress') {
-        setTimeout(async () => {
-          const nextResponse = await fetch('/api/game-state', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'moveToNextRound' }),
-          });
-          const nextData = await nextResponse.json();
-          setGameState(nextData);
-        }, 3000); // 3 second delay to show correct answer
-      }
     } catch (error) {
       console.error('Error confirming answer:', error);
+    }
+  };
+
+  const handleMoveToNextRound = async () => {
+    try {
+      const response = await fetch('/api/game-state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'moveToNextRound' }),
+      });
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error moving to next round:', error);
+    }
+  };
+
+  const handleStartFirstQuestion = async () => {
+    try {
+      const response = await fetch('/api/game-state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'startFirstQuestion' }),
+      });
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error starting first question:', error);
+    }
+  };
+
+  const handleResetGame = async () => {
+    try {
+      const response = await fetch('/api/game-state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset' }),
+      });
+      const data = await response.json();
+      setGameState(data);
+    } catch (error) {
+      console.error('Error resetting game:', error);
     }
   };
 
@@ -259,28 +288,28 @@ export default function HostPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-2xl">Ładowanie...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d]">
+        <div className="text-3xl font-black text-[#FFD700]">Ładowanie...</div>
       </div>
     );
   }
 
   if (!gameState) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-2xl">Błąd ładowania stanu gry</div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d]">
+        <div className="text-3xl font-black text-red-500">Błąd ładowania stanu gry</div>
       </div>
     );
   }
 
   if (gameState.status === 'not_started') {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
-        <div className="bg-white rounded-lg shadow-2xl p-12 text-center">
-          <h1 className="text-4xl font-bold mb-6">Panel Prowadzącego</h1>
+      <div className="min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d] flex items-center justify-center p-8">
+        <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] rounded-xl shadow-2xl p-12 text-center border-4 border-[#FFD700]">
+          <h1 className="text-5xl font-black mb-8 text-[#FFD700] tracking-wider uppercase drop-shadow-[0_0_20px_rgba(255,215,0,0.8)]">Panel Prowadzącego</h1>
           <button
             onClick={handleStartGame}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-colors"
+            className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-6 px-12 rounded-xl text-2xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
           >
             Rozpocznij Grę
           </button>
@@ -290,21 +319,39 @@ export default function HostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d] p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6 bg-blue-900 text-white p-4 rounded-lg flex justify-between items-center">
+        <div className="mb-8 bg-gradient-to-r from-[#000428] to-[#001a4d] text-white p-6 rounded-xl flex justify-between items-center border-2 border-[#FFD700] shadow-2xl">
           <div>
-            <h1 className="text-2xl font-bold">Panel Prowadzącego</h1>
-            <p className="text-sm">Status: {gameState.status === 'in_progress' ? 'W trakcie' : gameState.status}</p>
+            <h1 className="text-3xl font-black text-[#FFD700] tracking-wider uppercase">Panel Prowadzącego</h1>
+            <p className="text-lg font-bold text-white mt-2">Status: {gameState.status === 'in_progress' ? 'W TRAKCIE' : gameState.status === 'intro' ? 'CZÓŁÓWKA' : gameState.status.toUpperCase()}</p>
           </div>
-          {gameState.status === 'in_progress' && (
-            <button
-              onClick={handleEndGame}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-            >
-              Zakończ Grę
-            </button>
-          )}
+          <div className="flex gap-4">
+            {gameState.status === 'intro' && (
+              <button
+                onClick={handleStartFirstQuestion}
+                className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
+              >
+                Przejdź do pierwszego pytania
+              </button>
+            )}
+            {gameState.status === 'in_progress' && (
+              <button
+                onClick={handleEndGame}
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-black py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(239,68,68,0.5)]"
+              >
+                Zakończ Grę
+              </button>
+            )}
+            {(gameState.status === 'won' || gameState.status === 'lost') && (
+              <button
+                onClick={handleResetGame}
+                className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
+              >
+                Nowa Gra
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -320,10 +367,10 @@ export default function HostPage() {
              gameState.visibleAnswers.length < gameState.currentQuestion.answers.length && 
              !gameState.answerConfirmed && 
              gameState.status === 'in_progress' && (
-              <div className="bg-blue-100 border-2 border-blue-500 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] border-2 border-[#FFD700] rounded-xl p-6">
                 <button
                   onClick={handleShowNextAnswer}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-xl"
+                  className="w-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-4 px-8 rounded-xl text-2xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
                 >
                   Pokaż odpowiedź {gameState.visibleAnswers.length + 1}
                 </button>
@@ -346,15 +393,32 @@ export default function HostPage() {
             {gameState.selectedAnswer !== null && 
              !gameState.answerConfirmed && 
              gameState.status === 'in_progress' && (
-              <div className="bg-yellow-100 border-2 border-yellow-500 rounded-lg p-4">
-                <p className="text-center mb-4 font-semibold">
-                  Zaznaczona odpowiedź: {['A', 'B', 'C', 'D'][gameState.selectedAnswer]}
+              <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] border-4 border-[#FFD700] rounded-xl p-6 shadow-2xl">
+                <p className="text-center mb-6 font-black text-2xl text-[#FFD700]">
+                  Zaznaczona odpowiedź: <span className="text-white text-3xl">{['A', 'B', 'C', 'D'][gameState.selectedAnswer]}</span>
                 </p>
                 <button
                   onClick={handleConfirmAnswer}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg"
+                  className="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-black py-4 px-8 rounded-xl text-2xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(34,197,94,0.8)]"
                 >
                   Potwierdź odpowiedź
+                </button>
+              </div>
+            )}
+
+            {/* Move to next round button - shown after correct answer is confirmed */}
+            {gameState.answerConfirmed && 
+             gameState.isAnswerCorrect === true && 
+             gameState.status === 'in_progress' && (
+              <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] border-4 border-[#FFD700] rounded-xl p-6 shadow-2xl">
+                <p className="text-center mb-6 font-black text-2xl text-[#FFD700]">
+                  ✓ Poprawna odpowiedź! Gracz przechodzi do następnego pytania.
+                </p>
+                <button
+                  onClick={handleMoveToNextRound}
+                  className="w-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-4 px-8 rounded-xl text-2xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
+                >
+                  Przejdź do następnego pytania
                 </button>
               </div>
             )}
@@ -378,7 +442,7 @@ export default function HostPage() {
                     <QRCodeDisplay url={getVotingUrl()} gameId={gameState.gameId} />
                     <button
                       onClick={handleToggleAudienceResults}
-                      className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg"
+                      className="mt-6 w-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
                     >
                       Pokaż wyniki głosowania
                     </button>
@@ -391,7 +455,7 @@ export default function HostPage() {
                     />
                     <button
                       onClick={handleToggleAudienceResults}
-                      className="mt-4 w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg"
+                      className="mt-6 w-full bg-gradient-to-r from-[#001a4d] to-[#000428] hover:from-[#FFD700] hover:to-[#FFA500] text-white hover:text-black font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 border-2 border-[#FFD700]"
                     >
                       Wróć do QR kodu
                     </button>
@@ -402,11 +466,11 @@ export default function HostPage() {
 
             {/* Friend question - Audio player */}
             {gameState.usedLifelines.includes('friend') && gameState.friendActive && gameState.currentQuestion && (
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4">Pytanie do przyjaciela</h3>
+              <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] p-8 rounded-xl shadow-2xl border-2 border-[#FFD700]">
+                <h3 className="text-2xl font-black mb-6 text-center text-[#FFD700] tracking-wider uppercase">Pytanie do przyjaciela</h3>
                 {audioPlaying ? (
                   <div className="text-center">
-                    <p className="text-lg mb-4">Odtwarzanie nagrania...</p>
+                    <p className="text-2xl mb-6 font-bold text-white">Odtwarzanie nagrania...</p>
                     <button
                       onClick={() => {
                         if (audioRef.current) {
@@ -415,14 +479,14 @@ export default function HostPage() {
                           setAudioPlaying(false);
                         }
                       }}
-                      className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(239,68,68,0.5)]"
                     >
                       Zatrzymaj
                     </button>
                   </div>
                 ) : (
                   <div className="text-center">
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-white mb-6 font-bold text-lg">
                       Plik: {gameState.currentQuestion.voiceFile}
                     </p>
                     <button
@@ -439,7 +503,7 @@ export default function HostPage() {
                           };
                         }
                       }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg"
+                      className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
                     >
                       Odtwórz nagranie
                     </button>

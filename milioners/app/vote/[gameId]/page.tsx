@@ -96,17 +96,17 @@ export default function VotePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 flex items-center justify-center p-4">
-        <div className="text-white text-2xl">Ładowanie...</div>
+      <div className="min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d] flex items-center justify-center p-4">
+        <div className="text-[#FFD700] text-3xl font-black">Ładowanie...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-red-900 to-red-700 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-2xl p-8 text-center max-w-md w-full">
-          <p className="text-red-600 text-xl font-bold">{error}</p>
+      <div className="min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d] flex items-center justify-center p-4">
+        <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] rounded-xl shadow-2xl p-8 text-center max-w-md w-full border-4 border-red-500">
+          <p className="text-red-500 text-2xl font-black">{error}</p>
         </div>
       </div>
     );
@@ -114,48 +114,48 @@ export default function VotePage() {
 
   if (!question || answers.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-2xl p-8 text-center max-w-md w-full">
-          <p className="text-gray-600 text-xl">Brak aktywnego pytania</p>
-          <p className="text-gray-500 mt-2">Poczekaj na rozpoczęcie głosowania</p>
+      <div className="min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d] flex items-center justify-center p-4">
+        <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] rounded-xl shadow-2xl p-8 text-center max-w-md w-full border-4 border-[#FFD700]">
+          <p className="text-white text-2xl font-black mb-4">Brak aktywnego pytania</p>
+          <p className="text-[#FFD700] text-lg font-bold">Poczekaj na rozpoczęcie głosowania</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-purple-700 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d] p-4">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-2xl p-6 mb-6">
-          <h1 className="text-2xl font-bold text-center mb-4 text-purple-900">
+        <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] rounded-xl shadow-2xl p-8 mb-6 border-4 border-[#FFD700]">
+          <h1 className="text-4xl font-black text-center mb-6 text-[#FFD700] tracking-wider uppercase drop-shadow-[0_0_20px_rgba(255,215,0,0.8)]">
             Głosowanie Widowni
           </h1>
-          <div className="bg-purple-100 p-4 rounded-lg mb-6">
-            <h2 className="text-xl font-semibold mb-2">{question}</h2>
+          <div className="bg-gradient-to-br from-[#000428] to-[#001a4d] p-6 rounded-xl mb-8 border-2 border-[#FFD700]/50">
+            <h2 className="text-2xl font-black text-white leading-tight">{question}</h2>
           </div>
 
           {voted ? (
             <div className="text-center py-8">
-              <div className="bg-green-100 border-2 border-green-500 rounded-lg p-6 mb-4">
-                <p className="text-2xl font-bold text-green-800 mb-2">✓ Twój głos został oddany!</p>
-                <p className="text-green-700">Dziękujemy za udział w głosowaniu.</p>
+              <div className="bg-gradient-to-r from-green-600 to-green-500 border-4 border-green-400 rounded-xl p-8 mb-6 shadow-[0_0_30px_rgba(34,197,94,0.8)]">
+                <p className="text-3xl font-black text-white mb-4">✓ Twój głos został oddany!</p>
+                <p className="text-xl text-white font-bold">Dziękujemy za udział w głosowaniu.</p>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-lg text-[#FFD700] font-bold">
                 Możesz głosować tylko raz na pytanie.
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
-              <p className="text-center text-gray-700 mb-4 font-semibold">
+            <div className="space-y-6">
+              <p className="text-center text-white mb-6 font-black text-2xl">
                 Wybierz odpowiedź:
               </p>
               {answers.map((answer, index) => (
                 <button
                   key={index}
                   onClick={() => handleVote(index)}
-                  className={`w-full ${answerColors[index]} text-white p-6 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg`}
+                  className={`w-full ${answerColors[index]} text-white p-8 rounded-xl text-2xl font-black transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(0,0,0,0.5)] border-2 border-white/20 hover:border-white`}
                 >
-                  <span className="mr-4 font-bold text-2xl">{answerLabels[index]}</span>
+                  <span className="mr-6 font-black text-3xl">{answerLabels[index]}</span>
                   {answer}
                 </button>
               ))}
@@ -163,7 +163,7 @@ export default function VotePage() {
           )}
         </div>
 
-        <div className="text-center text-white text-sm">
+        <div className="text-center text-[#FFD700] text-lg font-bold">
           <p>ID Gry: {gameId}</p>
         </div>
       </div>
