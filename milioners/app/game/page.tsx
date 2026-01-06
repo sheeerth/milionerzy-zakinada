@@ -24,7 +24,7 @@ export default function GamePage() {
   const previousStatusRef = useRef<string>('not_started');
   const previousAudienceVoteActiveRef = useRef<boolean>(false);
 
-  // Initial game state fetch
+  // Polling for game state updates (read-only, no state sync)
   useEffect(() => {
     const fetchGameState = async () => {
       try {
@@ -45,36 +45,10 @@ export default function GamePage() {
     };
 
     fetchGameState();
-  }, []);
-
-  // Polling for game state updates - only when game is active or audience vote is active
-  useEffect(() => {
-    // Only start polling if game is active (not 'not_started') or audience vote is active
-    const shouldPoll = gameState && (
-      gameState.status !== 'not_started' || 
-      gameState.audienceVoteActive === true
-    );
-
-    if (!shouldPoll) {
-      return;
-    }
-
-    const fetchGameState = async () => {
-      try {
-        const { fetchGameStateReadOnly } = await import('@/lib/game-state-client');
-        const data = await fetchGameStateReadOnly();
-        setGameState(data);
-      } catch (error) {
-        console.error('Error fetching game state:', error);
-      }
-    };
-
-    // Poll every 2 seconds, but more frequently during audience vote (1 second)
-    const pollInterval = gameState?.audienceVoteActive ? 1000 : 2000;
-    const interval = setInterval(fetchGameState, pollInterval);
+    const interval = setInterval(fetchGameState, 2000); // Poll every 2 seconds
 
     return () => clearInterval(interval);
-  }, [gameState?.status, gameState?.audienceVoteActive]);
+  }, []);
 
   // Play sounds based on game state changes
   useEffect(() => {
