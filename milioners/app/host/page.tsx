@@ -9,12 +9,44 @@ import Lifelines from '@/components/Lifelines';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import VotingResults from '@/components/VotingResults';
 import ChallengeBoard from '@/components/ChallengeBoard';
+import HostLogin from '@/components/HostLogin';
 
 export default function HostPage() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = () => {
+      if (typeof window === 'undefined') return false;
+      
+      const authenticated = localStorage.getItem('host_authenticated') === 'true';
+      const authTimestamp = localStorage.getItem('host_auth_timestamp');
+      
+      // Check if authentication is still valid (24 hours)
+      if (authenticated && authTimestamp) {
+        const timestamp = parseInt(authTimestamp, 10);
+        const now = Date.now();
+        const hoursSinceAuth = (now - timestamp) / (1000 * 60 * 60);
+        
+        if (hoursSinceAuth < 24) {
+          return true;
+        } else {
+          // Expired - clear auth
+          localStorage.removeItem('host_authenticated');
+          localStorage.removeItem('host_auth_timestamp');
+          return false;
+        }
+      }
+      
+      return false;
+    };
+
+    setIsAuthenticated(checkAuth());
+  }, []);
 
   // Polling for game state updates
   useEffect(() => {
@@ -286,6 +318,11 @@ export default function HostPage() {
     return `${window.location.origin}/vote/${gameState.gameId}`;
   };
 
+  // Show login screen if not authenticated
+  if (!isAuthenticated) {
+    return <HostLogin onLogin={() => setIsAuthenticated(true)} />;
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#000000] via-[#000428] to-[#001a4d]">
@@ -351,6 +388,17 @@ export default function HostPage() {
                 Nowa Gra
               </button>
             )}
+            <button
+              onClick={() => {
+                localStorage.removeItem('host_authenticated');
+                localStorage.removeItem('host_auth_timestamp');
+                setIsAuthenticated(false);
+              }}
+              className="bg-gradient-to-r from-gray-600 to-gray-500 hover:from-gray-500 hover:to-gray-400 text-white font-black py-3 px-6 rounded-xl transition-all transform hover:scale-105"
+              title="Wyloguj się"
+            >
+              Wyloguj
+            </button>
           </div>
         </div>
 

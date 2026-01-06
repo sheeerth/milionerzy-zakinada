@@ -52,7 +52,7 @@ export const PRIZE_LEVELS = [
   10000,   // Round 4
   15000,   // Round 5
   25000,   // Round 6
-  50000,   // Round 7 - safe haven
+  40000,   // Round 7 - safe haven
   75000,   // Round 8
   125000,  // Round 9
   250000,  // Round 10
@@ -70,7 +70,7 @@ export function getPrizeForRound(round: number): number {
 
 export function getGuaranteedPrize(round: number): number {
   // Safe havens: round 2 (2,000), round 7 (50,000)
-  if (round >= 7) return 50000;
+  if (round >= 7) return 40000;
   if (round >= 2) return 2000;
   return 0;
 }
@@ -81,7 +81,7 @@ export function getSafeHavenPrize(round: number): number {
   // If round is 7 or higher, return 50,000 (round 7 prize)
   // If round is 2 or higher (but less than 7), return 2,000 (round 2 prize)
   // Otherwise return 0
-  if (round >= 7) return 50000;
+  if (round >= 7) return 40000;
   if (round >= 2) return 2000;
   return 0;
 }

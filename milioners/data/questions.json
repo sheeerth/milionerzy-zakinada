@@ -2,125 +2,458 @@
   "questions": [
     {
       "id": 1,
-      "question": "Jakie jest stolica Polski?",
-      "answers": ["Warszawa", "Kraków", "Gdańsk", "Wrocław"],
-      "correctAnswer": 0,
+      "question": "Kim z zawodu jest żona Pana Kruży?",
+      "answers": [
+        "nauczycielka",
+        "sprzątaczką",
+        "wuefistą",
+        "bibliotekarką"
+      ],
+      "correctAnswer": 3,
       "lvl": 1,
       "voiceFile": "question_1.mp3"
     },
     {
       "id": 2,
-      "question": "Ile planet jest w Układzie Słonecznym?",
-      "answers": ["7", "8", "9", "10"],
-      "correctAnswer": 1,
+      "question": "Od krótkiego czasu ucząca w naszej szkole Pani Marta Gliwicka, gdyby nie powołanie do genetyki roślin to jaki zawód by wykonywała?",
+      "answers": [
+        "Informatyk",
+        "Księgowa",
+        "Kosmetolog",
+        "własna kwiaciarnia"
+      ],
+      "correctAnswer": 2,
       "lvl": 1,
       "voiceFile": "question_2.mp3"
     },
     {
       "id": 3,
-      "question": "Który pierwiastek chemiczny ma symbol 'Au'?",
-      "answers": ["Srebro", "Złoto", "Miedź", "Platyna"],
-      "correctAnswer": 1,
+      "question": "Co w wolnym czasie lubi robić Pani Niesporek?",
+      "answers": [
+        "tańczyć",
+        "śpiewać",
+        "Grać w gry",
+        "wyklejać scrapbookingi"
+      ],
+      "correctAnswer": 3,
       "lvl": 1,
       "voiceFile": "question_3.mp3"
     },
     {
       "id": 4,
-      "question": "W którym roku zakończyła się II wojna światowa?",
-      "answers": ["1944", "1945", "1946", "1947"],
-      "correctAnswer": 1,
+      "question": "Najczęściej zobaczymy Panią Gąsior w kolorze…?",
+      "answers": [
+        "niebieskim",
+        "czarnym",
+        "czerwonym",
+        "białym"
+      ],
+      "correctAnswer": 2,
       "lvl": 1,
       "voiceFile": "question_4.mp3"
     },
     {
       "id": 5,
-      "question": "Kto napisał 'Pana Tadeusza'?",
-      "answers": ["Juliusz Słowacki", "Adam Mickiewicz", "Zygmunt Krasiński", "Cyprian Norwid"],
+      "question": "Jaki element garderoby Pani Gąsior lubi najbardziej?",
+      "answers": [
+        "świąteczny sweterek",
+        "beret",
+        "wysokie szpilki",
+        "kolczyki"
+      ],
       "correctAnswer": 1,
-      "lvl": 2,
+      "lvl": 1,
       "voiceFile": "question_5.mp3"
     },
     {
       "id": 6,
-      "question": "Jaka jest najdłuższa rzeka w Polsce?",
-      "answers": ["Wisła", "Odra", "Warta", "Bug"],
-      "correctAnswer": 0,
-      "lvl": 2,
+      "question": "Jakie imiona mają nasze Salezjańskie alpaki?",
+      "answers": [
+        "bielik, czoker, karmel, tofuś",
+        "kiki, czoki, karmsik, tofu",
+        "alpaki nie mają imion",
+        "kokuś, czokuś, tofik i karmelek"
+      ],
+      "correctAnswer": 3,
+      "lvl": 1,
       "voiceFile": "question_6.mp3"
     },
     {
       "id": 7,
-      "question": "Który ocean jest największy?",
-      "answers": ["Atlantycki", "Indyjski", "Spokojny", "Arktyczny"],
+      "question": "Kim był poprzedni dyrektor naszej szkoły? (przed Ks.Krzysztofem)",
+      "answers": [
+        "Ks. Maciej Sokalski",
+        "Ks. Tadeusz Mietła",
+        "Ks. Jarosław Wnuk",
+        "Ks. Łukasz Rudnik"
+      ],
       "correctAnswer": 2,
-      "lvl": 2,
+      "lvl": 1,
       "voiceFile": "question_7.mp3"
     },
     {
       "id": 8,
-      "question": "Ile wynosi prędkość światła w próżni (w przybliżeniu)?",
-      "answers": ["300 000 km/s", "150 000 km/s", "450 000 km/s", "600 000 km/s"],
-      "correctAnswer": 0,
+      "question": "Jaki nauczyciel z wymienionych, najszybciej sprawdza prace klasowe?",
+      "answers": [
+        "Pani Łopatkiewicz",
+        "Pani Jankowska",
+        "Pani Biskup",
+        "Pani Rekiel"
+      ],
+      "correctAnswer": 2,
       "lvl": 2,
       "voiceFile": "question_8.mp3"
     },
     {
       "id": 9,
-      "question": "Który kompozytor napisał 'Cztery pory roku'?",
-      "answers": ["Wolfgang Amadeus Mozart", "Antonio Vivaldi", "Ludwig van Beethoven", "Johann Sebastian Bach"],
-      "correctAnswer": 1,
-      "lvl": 3,
+      "question": "Ilu członków rodziny Pana Szołtyska pracuje/chodzi do naszej szkoły?",
+      "answers": [
+        "1",
+        "tylko Pan Szołtysek",
+        "6",
+        "4"
+      ],
+      "correctAnswer": 3,
+      "lvl": 2,
       "voiceFile": "question_9.mp3"
     },
     {
       "id": 10,
-      "question": "Jaka jest najwyższa góra na świecie?",
-      "answers": ["K2", "Mount Everest", "Kangchenjunga", "Lhotse"],
-      "correctAnswer": 1,
-      "lvl": 3,
+      "question": "Dokończ typowy tekst Pani Janowskiej: Szkoła ma….?",
+      "answers": [
+        "być przyjemna",
+        "was czegoś nauczyć",
+        "boleć",
+        "duży wpływ jakimi będziemy ludźmi"
+      ],
+      "correctAnswer": 2,
+      "lvl": 2,
       "voiceFile": "question_10.mp3"
     },
     {
       "id": 11,
-      "question": "Który pierwiastek jest najlżejszy?",
-      "answers": ["Hel", "Wodór", "Lit", "Beryl"],
+      "question": "Szkielet codziennie towarzyszący nam w pracowni biologicznej ma na imię…?:",
+      "answers": [
+        "szkielet Mietek",
+        "szkielet Stefan",
+        "szkielet Alojzy",
+        "szkielet nie ma imienia"
+      ],
       "correctAnswer": 1,
-      "lvl": 3,
+      "lvl": 2,
       "voiceFile": "question_11.mp3"
     },
     {
       "id": 12,
-      "question": "W którym roku odbyła się bitwa pod Grunwaldem?",
-      "answers": ["1409", "1410", "1411", "1412"],
+      "question": "Typowym tekstem Pani Jankowskiej jest…?",
+      "answers": [
+        "nic mi się nie chcę",
+        "sugerujesz że brzydko pisze?",
+        "mam tylko dwa tygodnie na sprawdzenie sprawdzianów",
+        "zawsze jestem na czas"
+      ],
       "correctAnswer": 1,
-      "lvl": 3,
+      "lvl": 2,
       "voiceFile": "question_12.mp3"
     },
     {
       "id": 13,
-      "question": "Który malarz namalował 'Gwiaździstą noc'?",
-      "answers": ["Pablo Picasso", "Vincent van Gogh", "Claude Monet", "Salvador Dalí"],
-      "correctAnswer": 1,
-      "lvl": 4,
+      "question": "Któremu nauczycielowi nie udało się zdać prawa jazdy?",
+      "answers": [
+        "Pani Jankowskiej",
+        "Pani Biskup",
+        "Panu Widerze",
+        "Panu Strzeleckiemu"
+      ],
+      "correctAnswer": 3,
+      "lvl": 2,
       "voiceFile": "question_13.mp3"
     },
     {
       "id": 14,
-      "question": "Jaka jest wartość liczby Pi do dwóch miejsc po przecinku?",
-      "answers": ["3.12", "3.14", "3.16", "3.18"],
-      "correctAnswer": 1,
-      "lvl": 4,
+      "question": "Z czego strzelał Pan Kruża?",
+      "answers": [
+        "z wiatrówki",
+        "z AK47",
+        "nie strzelał bo to nielegalne",
+        "z pistoletu maszynowego"
+      ],
+      "correctAnswer": 3,
+      "lvl": 2,
       "voiceFile": "question_14.mp3"
     },
     {
       "id": 15,
-      "question": "Która planeta jest najbliższa Słońcu?",
-      "answers": ["Wenus", "Merkury", "Ziemia", "Mars"],
-      "correctAnswer": 1,
-      "lvl": 4,
+      "question": "Który nauczyciel ma osobę chodzącą po wodę w każdej klasie?",
+      "answers": [
+        "Pani Wadowska",
+        "Pani Gliwicka-Gwiazdowska",
+        "Pani Jankowska",
+        "Pani Synowiec"
+      ],
+      "correctAnswer": 2,
+      "lvl": 2,
       "voiceFile": "question_15.mp3"
+    },
+    {
+      "id": 16,
+      "question": "W jakim mieście mieszkała kiedyś Pani Makowska?",
+      "answers": [
+        "w Borowej Wsi",
+        "w Katowicach",
+        "w Makowisku",
+        "w Warszawie"
+      ],
+      "correctAnswer": 1,
+      "lvl": 2,
+      "voiceFile": "question_16.mp3"
+    },
+    {
+      "id": 17,
+      "question": "Kto jest najjaśniejszą gwiazdą w szkole?",
+      "answers": [
+        "Pani Gliwicka-Gwiazdowska",
+        "Ksiądz Dyrektor",
+        "Pani Rekiel",
+        "Pani Wadowska"
+      ],
+      "correctAnswer": 3,
+      "lvl": 2,
+      "voiceFile": "question_17.mp3"
+    },
+    {
+      "id": 18,
+      "question": "Co lubi Pani Gawenda?",
+      "answers": [
+        "jazde konna",
+        "pływanie",
+        "bieganie",
+        "tenis"
+      ],
+      "correctAnswer": 0,
+      "lvl": 2,
+      "voiceFile": "question_18.mp3"
+    },
+    {
+      "id": 19,
+      "question": "Jaki nauczyciel zgubił się w górach z klasą?",
+      "answers": [
+        "Pani Wadowska",
+        "Pani Rekiel",
+        "Pan Widera",
+        "Ks.Maciej"
+      ],
+      "correctAnswer": 0,
+      "lvl": 3,
+      "voiceFile": "question_19.mp3"
+    },
+    {
+      "id": 20,
+      "question": "Na jaki wynik zdała maturę Pani Biskup?",
+      "answers": [
+        "na 75%",
+        "na trójkę",
+        "na piątkę",
+        "na 50%"
+      ],
+      "correctAnswer": 2,
+      "lvl": 3,
+      "voiceFile": "question_20.mp3"
+    },
+    {
+      "id": 21,
+      "question": "Jaka byla najwieksza wpadka Pani Cirmaciu przed prowadzeniem ważnego wykładu?",
+      "answers": [
+        "zaspanie i nie dotarcie na wykład który miała prowadzić",
+        "zgubienie się w nowym mieście, co skutkowało spóźnieniem",
+        "zabranie dwóch lewych i różnokolorowych butów",
+        "nigdy nie miała takiej sytuacji"
+      ],
+      "correctAnswer": 2,
+      "lvl": 3,
+      "voiceFile": "question_21.mp3"
+    },
+    {
+      "id": 22,
+      "question": "Pani Cirmaciu lubi podróże samochodem co zwiedziła więc sama autem?",
+      "answers": [
+        "Całe Niemcy",
+        "Cały Śląsk",
+        "Całą Polske",
+        "Całą Europe i Azje"
+      ],
+      "correctAnswer": 2,
+      "lvl": 3,
+      "voiceFile": "question_22.mp3"
+    },
+    {
+      "id": 23,
+      "question": "Pan Widera obecnie uczy wychowania fizycznego, ile ważył w okresie szkoły średniej i jak wyglądał?",
+      "answers": [
+        "60kg i miał długie włosy do ramion",
+        "90kg i nie wiele różniącą się fryzurę do obecnej",
+        "60kg i nie wiele różniącą się fryzurę do obecnej",
+        "100kg i był łysy"
+      ],
+      "correctAnswer": 0,
+      "lvl": 3,
+      "voiceFile": "question_23.mp3"
+    },
+    {
+      "id": 24,
+      "question": "Na jakim instrumencie grała Pani Jędrusik w młodości?",
+      "answers": [
+        "na skrzypcach",
+        "na wiolonczeli",
+        "na saksofonie",
+        "nie grała na żadnym instrumencie"
+      ],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_24.mp3"
+    },
+    {
+      "id": 25,
+      "question": "Parenaście lat temu w wyniku niefortunnego wypadku Ks. Dyrektor upadł na blache i rozciął sobie i posiada widoczną bliznę na…?",
+      "answers": [
+        "lewej ręce",
+        "łuku brwiowym",
+        "lewej kostce",
+        "na głowie"
+      ],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_25.mp3"
+    },
+    {
+      "id": 26,
+      "question": "Ulubionym słodyczem Pani Aleksandry Łopatkiewicz jest",
+      "answers": [
+        "marcepan",
+        "nie lubi słodyczy",
+        "Żelki",
+        "Biała czekolada"
+      ],
+      "correctAnswer": 0,
+      "lvl": 3,
+      "voiceFile": "question_26.mp3"
+    },
+    {
+      "id": 27,
+      "question": "Pani Łopatkiewicz obecnie w naszej szkole uczy j.angielskiego, jakiego jeszcze przedmiotu kiedyś uczyła?",
+      "answers": [
+        "matematyki",
+        "fiolozofii",
+        "j.polskiego",
+        "plastyki"
+      ],
+      "correctAnswer": 2,
+      "lvl": 3,
+      "voiceFile": "question_27.mp3"
+    },
+    {
+      "id": 28,
+      "question": "Jaka była przyczyna powtórnego podchodzenia do egzaminu maturalnego przez Panią Migdałek?",
+      "answers": [
+        "nie zdanie egzaminu za pierwszym razem",
+        "chęć uzyskania wyższego wyniku",
+        "potrzeba uzyskania matury niemieckiej by rozpocząć tam studia",
+        "dodatkowe napisanie innego przedmiotu"
+      ],
+      "correctAnswer": 2,
+      "lvl": 3,
+      "voiceFile": "question_28.mp3"
+    },
+    {
+      "id": 29,
+      "question": "Wiele z nas ma rodzeństwo, ile ma go Pani Migdałek?",
+      "answers": [
+        "nie ma rodzeństwa",
+        "brata",
+        "dwie siostry",
+        "siostre bliźniaczkę"
+      ],
+      "correctAnswer": 3,
+      "lvl": 3,
+      "voiceFile": "question_29.mp3"
+    },
+    {
+      "id": 30,
+      "question": "Jakie imię zostało nadane dzikowi który cyklicznie odwiedza okolice domu Pani Jankowskiej?",
+      "answers": [
+        "Tosia",
+        "Adela",
+        "nie grasują u niej dziki",
+        "Frela"
+      ],
+      "correctAnswer": 1,
+      "lvl": 3,
+      "voiceFile": "question_30.mp3"
+    },
+    {
+      "id": 31,
+      "question": "Kim byłby Pan Strzelecki z zawodu gdyby nie bycie wuefistą?",
+      "answers": [
+        "lekarzem",
+        "siatkarzem",
+        "tancerzem",
+        "księdzem"
+      ],
+      "correctAnswer": 0,
+      "lvl": 3,
+      "voiceFile": "question_31.mp3"
+    },
+    {
+      "id": 32,
+      "question": "Pani Niesporek mieszkała kiedyś w Stanach Zjednoczonych, w jakim stanie żyła?",
+      "answers": [
+        "w Maine",
+        "w Bostonie",
+        "w Oregonie",
+        "w Teksasie"
+      ],
+      "correctAnswer": 2,
+      "lvl": 4,
+      "voiceFile": "question_32.mp3"
+    },
+    {
+      "id": 33,
+      "question": "Ile razy Pan Strzelecki był na misji w Afryce?",
+      "answers": [
+        "10",
+        "2",
+        "5",
+        "1"
+      ],
+      "correctAnswer": 1,
+      "lvl": 2,
+      "voiceFile": "question_33.mp3"
+    },
+    {
+      "id": 34,
+      "question": "Ksiądz Jarek w młodości przed łysiną miał włosy koloru?",
+      "answers": [
+        "zawsze nie miał włosów",
+        "czarnego",
+        "bardzo jasnego blondu",
+        "szatynowego"
+      ],
+      "correctAnswer": 3,
+      "lvl": 4,
+      "voiceFile": "question_34.mp3"
+    },
+    {
+      "id": 35,
+      "question": "Gdzie Ks. Maciej podjął decyzję o chęci wstąpienia do zgromadzenia duchowego?",
+      "answers": [
+        "na dachu szkoły salezjańskiej w Oświęcimiu",
+        "w restauracji Murawa Bistro w Zabrzu",
+        "na dachu szkoły salezjańskiej w Zabrzu",
+        "podczas Triduum Paschalnego w kościele"
+      ],
+      "correctAnswer": 2,
+      "lvl": 4,
+      "voiceFile": "question_35.mp3"
     }
   ]
 }
-
-
