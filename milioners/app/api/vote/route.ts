@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const success = addVote(gameId, answerIndex, voterId);
+    const success = await addVote(gameId, answerIndex, voterId);
 
     if (!success) {
       console.log('Vote rejected - already voted:', voterId);

@@ -17,7 +17,7 @@ export async function GET(
     }
 
     console.log('Fetching votes for gameId:', gameId);
-    const results = getVotesForGame(gameId);
+    const results = await getVotesForGame(gameId);
     
     if (!results) {
       console.log('No votes found for gameId:', gameId);
