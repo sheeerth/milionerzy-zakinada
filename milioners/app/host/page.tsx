@@ -48,7 +48,7 @@ export default function HostPage() {
     setIsAuthenticated(checkAuth());
   }, []);
 
-  // Polling for game state updates (host can sync state)
+  // Initial game state fetch (no polling - host updates state through actions)
   useEffect(() => {
     if (!isAuthenticated) {
       return;
@@ -67,9 +67,6 @@ export default function HostPage() {
     };
 
     fetchGameState();
-    const interval = setInterval(fetchGameState, 2000); // Poll every 2 seconds (reduced frequency)
-
-    return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   // Poll for voting results when audience vote is active
