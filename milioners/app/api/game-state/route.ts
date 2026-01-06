@@ -39,23 +39,33 @@ async function getOrCreateState(clientState?: GameState): Promise<GameState> {
   return newState;
 }
 
+// Helper function to decode base64 game state from header
+function decodeGameStateHeader(headerValue: string): GameState | null {
+  try {
+    // Decode base64 with UTF-8 support
+    const utf8String = decodeURIComponent(escape(atob(headerValue)));
+    const parsed = JSON.parse(utf8String);
+    if (parsed && typeof parsed === 'object' && 'status' in parsed) {
+      return parsed as GameState;
+    }
+  } catch (e) {
+    console.warn('Error decoding game state from header:', e);
+  }
+  return null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Try to get state from request header (client sync - for immediate response)
     const clientStateHeader = request.headers.get('x-game-state');
     if (clientStateHeader) {
-      try {
-        const parsed = JSON.parse(clientStateHeader);
-        if (parsed && typeof parsed === 'object' && 'status' in parsed) {
-          // Use client state but also sync to Redis in background
-          saveGameStateToRedis(parsed).catch(err => 
-            console.error('Error syncing client state to Redis:', err)
-          );
-          return NextResponse.json(parsed);
-        }
-      } catch (e) {
-        // Invalid client state, continue with Redis/server state
-        console.warn('Invalid client state in header:', e);
+      const decodedState = decodeGameStateHeader(clientStateHeader);
+      if (decodedState) {
+        // Use client state but also sync to Redis in background
+        saveGameStateToRedis(decodedState).catch(err => 
+          console.error('Error syncing client state to Redis:', err)
+        );
+        return NextResponse.json(decodedState);
       }
     }
 
@@ -81,15 +91,10 @@ export async function POST(request: NextRequest) {
     let currentState: GameState;
     
     if (clientStateHeader) {
-      try {
-        const parsed = JSON.parse(clientStateHeader);
-        if (parsed && typeof parsed === 'object' && 'status' in parsed) {
-          currentState = parsed;
-        } else {
-          currentState = await getOrCreateState();
-        }
-      } catch (e) {
-        console.warn('Invalid client state in header:', e);
+      const decodedState = decodeGameStateHeader(clientStateHeader);
+      if (decodedState) {
+        currentState = decodedState;
+      } else {
         currentState = await getOrCreateState();
       }
     } else {

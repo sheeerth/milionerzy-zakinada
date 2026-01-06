@@ -11,7 +11,17 @@ export function getGameStateHeaders(): HeadersInit {
   };
   
   if (localState) {
-    headers['x-game-state'] = JSON.stringify(localState);
+    // Encode state as base64 to avoid ISO-8859-1 encoding issues with special characters
+    try {
+      const jsonString = JSON.stringify(localState);
+      // Use btoa with UTF-8 safe encoding
+      const utf8String = unescape(encodeURIComponent(jsonString));
+      const base64State = btoa(utf8String);
+      headers['x-game-state'] = base64State;
+    } catch (error) {
+      console.error('Error encoding game state for header:', error);
+      // If encoding fails, don't send the header
+    }
   }
   
   return headers;
@@ -28,7 +38,7 @@ export async function fetchGameState(): Promise<GameState> {
   return data;
 }
 
-export async function updateGameState(action: string, params: any = {}): Promise<GameState> {
+export async function updateGameState(action: string, params: Record<string, unknown> = {}): Promise<GameState> {
   const headers = getGameStateHeaders();
   const response = await fetch('/api/game-state', {
     method: 'POST',
