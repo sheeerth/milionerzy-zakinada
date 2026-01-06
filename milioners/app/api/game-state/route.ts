@@ -1,15 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GameState, createInitialGameState, startGame, startFirstQuestion, selectAnswer, confirmAnswer, moveToNextRound, showNextAnswer, useLifeline, setAudienceVoteResults, setChallengeNumber, acceptChallenge, rejectChallenge, toggleAudienceResults, endGame } from '@/lib/game-state';
+import { resetGameState } from '@/lib/game-storage';
 
-// In-memory game state storage
-// In production, this should be in a database or Redis
+// Persistent game state storage
+// Uses localStorage sync on client + server memory as fallback
+// On Vercel, each serverless function instance has its own memory,
+// so we rely on client sending state in headers
 let gameState: GameState | null = null;
 
-export async function GET() {
+// Initialize or get existing state
+function getOrCreateState(clientState?: GameState): GameState {
+  // Prefer client state if provided (most up-to-date)
+  if (clientState && typeof clientState === 'object' && 'status' in clientState) {
+    gameState = clientState;
+    return clientState;
+  }
+  
+  // Fallback to server memory
   if (!gameState) {
     gameState = createInitialGameState();
   }
-  return NextResponse.json(gameState);
+  return gameState;
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    // Try to get state from request header (client sync)
+    const clientStateHeader = request.headers.get('x-game-state');
+    if (clientStateHeader) {
+      try {
+        const parsed = JSON.parse(clientStateHeader);
+        if (parsed && typeof parsed === 'object' && 'status' in parsed) {
+          // Use client state (most up-to-date)
+          gameState = parsed;
+          return NextResponse.json(parsed);
+        }
+      } catch (e) {
+        // Invalid client state, continue with server state
+        console.warn('Invalid client state in header:', e);
+      }
+    }
+
+    // Fallback to server memory state
+    const state = getOrCreateState();
+    return NextResponse.json(state);
+  } catch (error) {
+    console.error('Error getting game state:', error);
+    const state = createInitialGameState();
+    gameState = state;
+    return NextResponse.json(state);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -17,80 +57,110 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action, ...params } = body;
 
-    if (!gameState) {
-      gameState = createInitialGameState();
+    // Get current state (try from client first, then server)
+    // Client state is always more up-to-date on Vercel serverless
+    const clientStateHeader = request.headers.get('x-game-state');
+    let currentState: GameState;
+    
+    if (clientStateHeader) {
+      try {
+        const parsed = JSON.parse(clientStateHeader);
+        if (parsed && typeof parsed === 'object' && 'status' in parsed) {
+          currentState = parsed;
+        } else {
+          currentState = getOrCreateState();
+        }
+      } catch (e) {
+        console.warn('Invalid client state in header:', e);
+        currentState = getOrCreateState();
+      }
+    } else {
+      currentState = getOrCreateState();
     }
 
+    // Apply action
+    let newState: GameState;
     switch (action) {
       case 'start':
-        gameState = startGame(gameState);
+        newState = startGame(currentState);
         break;
       
       case 'startFirstQuestion':
-        gameState = startFirstQuestion(gameState);
+        newState = startFirstQuestion(currentState);
         break;
       
       case 'selectAnswer':
         if (params.answerIndex !== undefined) {
-          gameState = selectAnswer(gameState, params.answerIndex);
+          newState = selectAnswer(currentState, params.answerIndex);
+        } else {
+          newState = currentState;
         }
         break;
       
       case 'confirmAnswer':
-        gameState = confirmAnswer(gameState);
+        newState = confirmAnswer(currentState);
         break;
       
       case 'moveToNextRound':
-        gameState = moveToNextRound(gameState);
+        newState = moveToNextRound(currentState);
         break;
       
       case 'showNextAnswer':
-        gameState = showNextAnswer(gameState);
+        newState = showNextAnswer(currentState);
         break;
       
       case 'useLifeline':
         if (params.lifeline) {
-          gameState = useLifeline(gameState, params.lifeline);
+          newState = useLifeline(currentState, params.lifeline);
+        } else {
+          newState = currentState;
         }
         break;
       
       case 'setAudienceVoteResults':
         if (params.results) {
-          gameState = setAudienceVoteResults(gameState, params.results);
+          newState = setAudienceVoteResults(currentState, params.results);
+        } else {
+          newState = currentState;
         }
         break;
       
       case 'setChallengeNumber':
         if (params.number !== undefined) {
-          gameState = setChallengeNumber(gameState, params.number);
+          newState = setChallengeNumber(currentState, params.number);
+        } else {
+          newState = currentState;
         }
         break;
       
       case 'acceptChallenge':
-        gameState = acceptChallenge(gameState);
+        newState = acceptChallenge(currentState);
         break;
       
       case 'rejectChallenge':
-        gameState = rejectChallenge(gameState);
+        newState = rejectChallenge(currentState);
         break;
       
       case 'toggleAudienceResults':
-        gameState = toggleAudienceResults(gameState);
+        newState = toggleAudienceResults(currentState);
         break;
       
       case 'endGame':
-        gameState = endGame(gameState);
+        newState = endGame(currentState);
         break;
       
       case 'reset':
-        gameState = createInitialGameState();
+        newState = await resetGameState();
         break;
       
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     }
 
-    return NextResponse.json(gameState);
+    // Save state to server memory (for this instance)
+    gameState = newState;
+
+    return NextResponse.json(newState);
   } catch (error) {
     console.error('Error updating game state:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

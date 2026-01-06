@@ -28,8 +28,8 @@ export default function GamePage() {
   useEffect(() => {
     const fetchGameState = async () => {
       try {
-        const response = await fetch('/api/game-state');
-        const data = await response.json();
+        const { fetchGameState: fetchState } = await import('@/lib/game-state-client');
+        const data = await fetchState();
         console.log('Game state received:', {
           status: data.status,
           currentRound: data.currentRound,

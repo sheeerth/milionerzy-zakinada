@@ -52,8 +52,8 @@ export default function HostPage() {
   useEffect(() => {
     const fetchGameState = async () => {
       try {
-        const response = await fetch('/api/game-state');
-        const data = await response.json();
+        const { fetchGameState: fetchState } = await import('@/lib/game-state-client');
+        const data = await fetchState();
         setGameState(data);
         setLoading(false);
       } catch (error) {
@@ -90,16 +90,9 @@ export default function HostPage() {
         
         if (results && Object.keys(results).length > 0) {
           // Update game state with results
-          const updateResponse = await fetch('/api/game-state', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'setAudienceVoteResults', results }),
-          });
-          
-          if (updateResponse.ok) {
-            const updatedState = await updateResponse.json();
-            setGameState(updatedState);
-          }
+          const { updateGameState } = await import('@/lib/game-state-client');
+          const updatedState = await updateGameState('setAudienceVoteResults', { results });
+          setGameState(updatedState);
         }
       } catch (error) {
         console.error('Error fetching votes:', error);
@@ -113,12 +106,8 @@ export default function HostPage() {
 
   const handleStartGame = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'start' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('start');
       setGameState(data);
     } catch (error) {
       console.error('Error starting game:', error);
@@ -127,12 +116,8 @@ export default function HostPage() {
 
   const handleShowNextAnswer = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'showNextAnswer' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('showNextAnswer');
       setGameState(data);
     } catch (error) {
       console.error('Error showing next answer:', error);
@@ -141,12 +126,8 @@ export default function HostPage() {
 
   const handleSelectAnswer = async (index: number) => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'selectAnswer', answerIndex: index }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('selectAnswer', { answerIndex: index });
       setGameState(data);
     } catch (error) {
       console.error('Error selecting answer:', error);
@@ -155,12 +136,8 @@ export default function HostPage() {
 
   const handleConfirmAnswer = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'confirmAnswer' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('confirmAnswer');
       setGameState(data);
     } catch (error) {
       console.error('Error confirming answer:', error);
@@ -169,12 +146,8 @@ export default function HostPage() {
 
   const handleMoveToNextRound = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'moveToNextRound' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('moveToNextRound');
       setGameState(data);
     } catch (error) {
       console.error('Error moving to next round:', error);
@@ -183,12 +156,8 @@ export default function HostPage() {
 
   const handleStartFirstQuestion = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'startFirstQuestion' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('startFirstQuestion');
       setGameState(data);
     } catch (error) {
       console.error('Error starting first question:', error);
@@ -197,12 +166,8 @@ export default function HostPage() {
 
   const handleResetGame = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'reset' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('reset');
       setGameState(data);
     } catch (error) {
       console.error('Error resetting game:', error);
@@ -211,12 +176,8 @@ export default function HostPage() {
 
   const handleUseLifeline = async (lifeline: string) => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'useLifeline', lifeline }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('useLifeline', { lifeline });
       setGameState(data);
 
       // Handle friend question audio
@@ -238,12 +199,8 @@ export default function HostPage() {
 
   const handleSetChallengeNumber = async (number: number) => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'setChallengeNumber', number }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('setChallengeNumber', { number });
       setGameState(data);
     } catch (error) {
       console.error('Error setting challenge number:', error);
@@ -253,12 +210,8 @@ export default function HostPage() {
   const handleAcceptChallenge = async () => {
     try {
       console.log('Accepting challenge, current round:', gameState?.currentRound);
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'acceptChallenge' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('acceptChallenge');
       console.log('Challenge accepted, new round:', data.currentRound, 'new question:', data.currentQuestion?.question);
       setGameState(data);
     } catch (error) {
@@ -268,12 +221,8 @@ export default function HostPage() {
 
   const handleRejectChallenge = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'rejectChallenge' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('rejectChallenge');
       setGameState(data);
     } catch (error) {
       console.error('Error rejecting challenge:', error);
@@ -282,12 +231,8 @@ export default function HostPage() {
 
   const handleToggleAudienceResults = async () => {
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'toggleAudienceResults' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('toggleAudienceResults');
       setGameState(data);
     } catch (error) {
       console.error('Error toggling audience results:', error);
@@ -300,12 +245,8 @@ export default function HostPage() {
     }
     
     try {
-      const response = await fetch('/api/game-state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'endGame' }),
-      });
-      const data = await response.json();
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('endGame');
       setGameState(data);
     } catch (error) {
       console.error('Error ending game:', error);
