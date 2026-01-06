@@ -4,7 +4,7 @@ import { PRIZE_LEVELS } from '@/lib/questions';
 
 interface PrizeLadderProps {
   currentRound: number;
-  status: 'not_started' | 'in_progress' | 'won' | 'lost';
+  status: 'not_started' | 'intro' | 'in_progress' | 'won' | 'lost';
 }
 
 export default function PrizeLadder({ currentRound, status }: PrizeLadderProps) {

@@ -14,7 +14,7 @@ export function getVotesForGame(gameId: string): { [answerIndex: number]: number
   
   const results: { [answerIndex: number]: number } = {};
   for (const [key, value] of Object.entries(votes)) {
-    if (key !== 'voters') {
+    if (key !== 'voters' && typeof value === 'number') {
       results[parseInt(key)] = value;
     }
   }
