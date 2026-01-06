@@ -24,12 +24,12 @@ export default function GamePage() {
   const previousStatusRef = useRef<string>('not_started');
   const previousAudienceVoteActiveRef = useRef<boolean>(false);
 
-  // Polling for game state updates
+  // Polling for game state updates (read-only, no state sync)
   useEffect(() => {
     const fetchGameState = async () => {
       try {
-        const { fetchGameState: fetchState } = await import('@/lib/game-state-client');
-        const data = await fetchState();
+        const { fetchGameStateReadOnly } = await import('@/lib/game-state-client');
+        const data = await fetchGameStateReadOnly();
         console.log('Game state received:', {
           status: data.status,
           currentRound: data.currentRound,
@@ -45,7 +45,7 @@ export default function GamePage() {
     };
 
     fetchGameState();
-    const interval = setInterval(fetchGameState, 1000); // Poll every second
+    const interval = setInterval(fetchGameState, 2000); // Poll every 2 seconds (reduced frequency)
 
     return () => clearInterval(interval);
   }, []);

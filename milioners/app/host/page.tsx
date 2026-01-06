@@ -48,8 +48,12 @@ export default function HostPage() {
     setIsAuthenticated(checkAuth());
   }, []);
 
-  // Polling for game state updates
+  // Polling for game state updates (host can sync state)
   useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     const fetchGameState = async () => {
       try {
         const { fetchGameState: fetchState } = await import('@/lib/game-state-client');
@@ -63,10 +67,10 @@ export default function HostPage() {
     };
 
     fetchGameState();
-    const interval = setInterval(fetchGameState, 1000);
+    const interval = setInterval(fetchGameState, 2000); // Poll every 2 seconds (reduced frequency)
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated]);
 
   // Poll for voting results when audience vote is active
   useEffect(() => {

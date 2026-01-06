@@ -31,10 +31,16 @@ export default function VotePage() {
       localStorage.setItem(`voter_${gameId}`, newVoterId);
     }
 
-    // Fetch current question from game state
+    // Fetch current question from game state (read-only)
     const fetchQuestion = async () => {
       try {
-        const response = await fetch('/api/game-state');
+        const response = await fetch('/api/game-state', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+        });
         const data = await response.json();
         if (data.currentQuestion) {
           setQuestion(data.currentQuestion.question);
@@ -49,7 +55,7 @@ export default function VotePage() {
     };
 
     fetchQuestion();
-    const interval = setInterval(fetchQuestion, 2000); // Poll for question updates
+    const interval = setInterval(fetchQuestion, 3000); // Poll every 3 seconds (reduced frequency)
 
     return () => clearInterval(interval);
   }, [gameId]);

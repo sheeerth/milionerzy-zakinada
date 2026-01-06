@@ -56,20 +56,24 @@ function decodeGameStateHeader(headerValue: string): GameState | null {
 
 export async function GET(request: NextRequest) {
   try {
-    // Try to get state from request header (client sync - for immediate response)
+    // Only sync client state if header is present (host panel only)
+    // Game screen uses read-only fetch without headers
     const clientStateHeader = request.headers.get('x-game-state');
     if (clientStateHeader) {
       const decodedState = decodeGameStateHeader(clientStateHeader);
       if (decodedState) {
-        // Use client state but also sync to Redis in background
+        // Host panel sent state - sync to Redis but prioritize Redis as source of truth
+        // This is just for faster response, but Redis is authoritative
         saveGameStateToRedis(decodedState).catch(err => 
           console.error('Error syncing client state to Redis:', err)
         );
-        return NextResponse.json(decodedState);
+        // Still return Redis state as source of truth
+        const redisState = await getOrCreateState();
+        return NextResponse.json(redisState);
       }
     }
 
-    // Get state from Redis (or create new)
+    // Get state from Redis (or create new) - this is the source of truth
     const state = await getOrCreateState();
     return NextResponse.json(state);
   } catch (error) {
@@ -86,20 +90,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action, ...params } = body;
 
-    // Get current state (try from client first, then Redis, then memory)
-    const clientStateHeader = request.headers.get('x-game-state');
-    let currentState: GameState;
-    
-    if (clientStateHeader) {
-      const decodedState = decodeGameStateHeader(clientStateHeader);
-      if (decodedState) {
-        currentState = decodedState;
-      } else {
-        currentState = await getOrCreateState();
-      }
-    } else {
-      currentState = await getOrCreateState();
-    }
+    // Always use Redis as source of truth - ignore client state headers
+    // Only host panel can modify state, and it should always sync from Redis first
+    const currentState = await getOrCreateState();
 
     // Apply action
     let newState: GameState;
