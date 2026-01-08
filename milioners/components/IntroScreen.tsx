@@ -1,32 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { soundManager } from '@/lib/sounds';
 
 export default function IntroScreen() {
   const [showLogo, setShowLogo] = useState(false);
-  const [audioPlaying, setAudioPlaying] = useState(false);
 
   useEffect(() => {
-    // Play intro music using preloaded sound
-    soundManager.play('intro', 0.7);
-    setAudioPlaying(true);
-
     // Show logo after a short delay
     const timer = setTimeout(() => {
       setShowLogo(true);
     }, 500);
 
-    // Note: We don't track when audio ends since soundManager handles it
-    // But we can set audioPlaying to false after a reasonable time
-    const audioTimer = setTimeout(() => {
-      setAudioPlaying(false);
-    }, 10000); // Assume intro is max 10 seconds
-
     return () => {
       clearTimeout(timer);
-      clearTimeout(audioTimer);
-      soundManager.stop('intro');
     };
   }, []);
 
@@ -48,13 +34,6 @@ export default function IntroScreen() {
           </div>
         )}
       </div>
-
-      {/* Loading indicator for audio */}
-      {audioPlaying && !showLogo && (
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-          <div className="text-[#FFD700] text-lg font-bold">Ładowanie...</div>
-        </div>
-      )}
     </div>
   );
 }

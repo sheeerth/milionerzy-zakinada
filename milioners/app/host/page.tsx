@@ -15,8 +15,6 @@ export default function HostPage() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [audioPlaying, setAudioPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Check authentication on mount
   useEffect(() => {
@@ -180,19 +178,7 @@ export default function HostPage() {
       const { updateGameState } = await import('@/lib/game-state-client');
       const data = await updateGameState('useLifeline', { lifeline });
       setGameState(data);
-
-      // Handle friend question audio
-      if (lifeline === 'friend' && gameState?.currentQuestion?.voiceFile) {
-        const audio = new Audio(`/voices/${gameState.currentQuestion.voiceFile}`);
-        audioRef.current = audio;
-        setAudioPlaying(true);
-        audio.play();
-        audio.onended = () => setAudioPlaying(false);
-        audio.onerror = () => {
-          console.error('Error playing audio');
-          setAudioPlaying(false);
-        };
-      }
+      // Audio dla telefonu do przyjaciela jest odtwarzane na ekranie gracza
     } catch (error) {
       console.error('Error using lifeline:', error);
     }
@@ -237,6 +223,26 @@ export default function HostPage() {
       setGameState(data);
     } catch (error) {
       console.error('Error toggling audience results:', error);
+    }
+  };
+
+  const handlePlayFriendAudio = async () => {
+    try {
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('playFriendAudio');
+      setGameState(data);
+    } catch (error) {
+      console.error('Error playing friend audio:', error);
+    }
+  };
+
+  const handleStopFriendAudio = async () => {
+    try {
+      const { updateGameState } = await import('@/lib/game-state-client');
+      const data = await updateGameState('stopFriendAudio');
+      setGameState(data);
+    } catch (error) {
+      console.error('Error stopping friend audio:', error);
     }
   };
 
@@ -454,51 +460,33 @@ export default function HostPage() {
               </div>
             )}
 
-            {/* Friend question - Audio player */}
+            {/* Friend question - Audio control */}
             {gameState.usedLifelines.includes('friend') && gameState.friendActive && gameState.currentQuestion && (
               <div className="bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] p-8 rounded-xl shadow-2xl border-2 border-[#FFD700]">
                 <h3 className="text-2xl font-black mb-6 text-center text-[#FFD700] tracking-wider uppercase">Pytanie do przyjaciela</h3>
-                {audioPlaying ? (
-                  <div className="text-center">
-                    <p className="text-2xl mb-6 font-bold text-white">Odtwarzanie nagrania...</p>
+                <div className="text-center">
+                  <p className="text-white mb-4 font-bold text-lg">
+                    {gameState.friendAudioPlaying ? 'Nagranie jest odtwarzane na ekranie gracza' : 'Kliknij, aby odtworzyć nagranie na ekranie gracza'}
+                  </p>
+                  <p className="text-[#FFD700] font-semibold text-sm mb-6">
+                    Plik: {gameState.currentQuestion.voiceFile}
+                  </p>
+                  {!gameState.friendAudioPlaying ? (
                     <button
-                      onClick={() => {
-                        if (audioRef.current) {
-                          audioRef.current.pause();
-                          audioRef.current = null;
-                          setAudioPlaying(false);
-                        }
-                      }}
-                      className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(239,68,68,0.5)]"
-                    >
-                      Zatrzymaj
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <p className="text-white mb-6 font-bold text-lg">
-                      Plik: {gameState.currentQuestion.voiceFile}
-                    </p>
-                    <button
-                      onClick={() => {
-                        if (gameState?.currentQuestion?.voiceFile) {
-                          const audio = new Audio(`/voices/${gameState.currentQuestion.voiceFile}`);
-                          audioRef.current = audio;
-                          setAudioPlaying(true);
-                          audio.play();
-                          audio.onended = () => setAudioPlaying(false);
-                          audio.onerror = () => {
-                            console.error('Error playing audio');
-                            setAudioPlaying(false);
-                          };
-                        }
-                      }}
+                      onClick={handlePlayFriendAudio}
                       className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFE55C] hover:to-[#FFD700] text-black font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(255,215,0,0.8)]"
                     >
                       Odtwórz nagranie
                     </button>
-                  </div>
-                )}
+                  ) : (
+                    <button
+                      onClick={handleStopFriendAudio}
+                      className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-black py-4 px-8 rounded-xl text-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(239,68,68,0.5)]"
+                    >
+                      Zatrzymaj nagranie
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 

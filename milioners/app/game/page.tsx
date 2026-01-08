@@ -23,6 +23,8 @@ export default function GamePage() {
   const previousQuestionIdRef = useRef<number | null>(null);
   const previousStatusRef = useRef<string>('not_started');
   const previousAudienceVoteActiveRef = useRef<boolean>(false);
+  const previousFriendAudioPlayingRef = useRef<boolean>(false);
+  const friendAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Polling for game state updates (read-only, no state sync)
   useEffect(() => {
@@ -48,6 +50,17 @@ export default function GamePage() {
     const interval = setInterval(fetchGameState, 2000); // Poll every 2 seconds
 
     return () => clearInterval(interval);
+  }, []);
+
+  // Play sounds based on game state changes
+  useEffect(() => {
+    // Cleanup audio on unmount or when gameState changes
+    return () => {
+      if (friendAudioRef.current) {
+        friendAudioRef.current.pause();
+        friendAudioRef.current = null;
+      }
+    };
   }, []);
 
   // Play sounds based on game state changes
@@ -115,6 +128,43 @@ export default function GamePage() {
       soundManager.play('audienceVote');
     }
 
+    // Play friend question audio when friendAudioPlaying is set to true
+    if (
+      gameState.friendAudioPlaying !== previousFriendAudioPlayingRef.current &&
+      gameState.friendAudioPlaying === true &&
+      gameState.currentQuestion?.voiceFile
+    ) {
+      // Friend audio should play - play audio
+      const audio = new Audio(`/voices/${gameState.currentQuestion.voiceFile}`);
+      friendAudioRef.current = audio;
+      audio.play().catch((error) => {
+        console.error('Error playing friend audio:', error);
+      });
+      audio.onended = () => {
+        friendAudioRef.current = null;
+        // Auto-stop when audio ends
+        import('@/lib/game-state-client').then(({ updateGameState }) => {
+          updateGameState('stopFriendAudio').catch((err: Error) => {
+            console.error('Error stopping friend audio:', err);
+          });
+        });
+      };
+      audio.onerror = () => {
+        console.error('Error playing friend audio');
+        friendAudioRef.current = null;
+      };
+    }
+
+    // Stop audio when friendAudioPlaying is set to false
+    if (
+      gameState.friendAudioPlaying !== previousFriendAudioPlayingRef.current &&
+      gameState.friendAudioPlaying === false &&
+      friendAudioRef.current
+    ) {
+      friendAudioRef.current.pause();
+      friendAudioRef.current = null;
+    }
+
     // Update refs
     previousRoundRef.current = gameState.currentRound;
     previousAnswerConfirmedRef.current = gameState.answerConfirmed;
@@ -122,6 +172,7 @@ export default function GamePage() {
     previousQuestionIdRef.current = currentQuestionId;
     previousStatusRef.current = gameState.status;
     previousAudienceVoteActiveRef.current = gameState.audienceVoteActive;
+    previousFriendAudioPlayingRef.current = gameState.friendAudioPlaying;
   }, [gameState]);
 
 
@@ -288,6 +339,25 @@ export default function GamePage() {
                   onReject={() => {}} // Only host can reject
                   disabled={true}
                 />
+              </div>
+            )}
+
+            {/* Friend question - Audio display */}
+            {gameState.usedLifelines.includes('friend') && gameState.friendActive && gameState.currentQuestion && (
+              <div className="mb-8 bg-gradient-to-br from-[#000428] via-[#001a4d] to-[#000000] p-8 rounded-xl shadow-2xl border-2 border-[#FFD700]">
+                <h3 className="text-2xl font-black mb-6 text-center text-[#FFD700] tracking-wider uppercase">Pytanie do przyjaciela</h3>
+                <div className="text-center">
+                  {gameState.friendAudioPlaying ? (
+                    <>
+                      <p className="text-2xl mb-4 font-bold text-white">Odtwarzanie nagrania...</p>
+                      <p className="text-[#FFD700] font-semibold text-sm">
+                        {gameState.currentQuestion.voiceFile}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-xl font-bold text-white">Oczekiwanie na odtworzenie nagrania...</p>
+                  )}
+                </div>
               </div>
             )}
 

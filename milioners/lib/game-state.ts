@@ -20,6 +20,7 @@ export interface GameState {
   audienceVoteResults: { [key: number]: number } | null; // answer index -> vote count
   showAudienceResults: boolean; // Whether to show results instead of QR code
   friendActive: boolean; // Whether friend lifeline is currently active
+  friendAudioPlaying: boolean; // Whether friend audio is currently playing
   challengeActive: boolean;
   challengeSelectedNumber: number | null;
   challengeAccepted: boolean | null;
@@ -43,6 +44,7 @@ export function createInitialGameState(): GameState {
     audienceVoteResults: null,
     showAudienceResults: false,
     friendActive: false,
+    friendAudioPlaying: false,
     challengeActive: false,
     challengeSelectedNumber: null,
     challengeAccepted: null,
@@ -131,9 +133,10 @@ export function moveToNextRound(state: GameState): GameState {
   newState.fiftyFiftyRemovedAnswers = [];
   newState.audienceVoteActive = false;
   newState.audienceVoteResults = null;
-  newState.showAudienceResults = false;
-  newState.friendActive = false;
-  newState.challengeActive = false;
+    newState.showAudienceResults = false;
+    newState.friendActive = false;
+    newState.friendAudioPlaying = false;
+    newState.challengeActive = false;
   newState.challengeSelectedNumber = null;
   newState.challengeAccepted = null;
   return newState;
@@ -217,6 +220,18 @@ export function acceptChallenge(state: GameState): GameState {
 export function toggleAudienceResults(state: GameState): GameState {
   const newState = { ...state };
   newState.showAudienceResults = !newState.showAudienceResults;
+  return newState;
+}
+
+export function playFriendAudio(state: GameState): GameState {
+  const newState = { ...state };
+  newState.friendAudioPlaying = true;
+  return newState;
+}
+
+export function stopFriendAudio(state: GameState): GameState {
+  const newState = { ...state };
+  newState.friendAudioPlaying = false;
   return newState;
 }
 

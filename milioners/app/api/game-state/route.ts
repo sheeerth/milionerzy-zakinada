@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GameState, createInitialGameState, startGame, startFirstQuestion, selectAnswer, confirmAnswer, moveToNextRound, showNextAnswer, useLifeline, setAudienceVoteResults, setChallengeNumber, acceptChallenge, rejectChallenge, toggleAudienceResults, endGame } from '@/lib/game-state';
+import { GameState, createInitialGameState, startGame, startFirstQuestion, selectAnswer, confirmAnswer, moveToNextRound, showNextAnswer, useLifeline, setAudienceVoteResults, setChallengeNumber, acceptChallenge, rejectChallenge, toggleAudienceResults, endGame, playFriendAudio, stopFriendAudio } from '@/lib/game-state';
 import { getGameStateFromRedis, saveGameStateToRedis, resetGameStateInRedis } from '@/lib/redis-client';
 
 // Persistent game state storage using Redis
@@ -159,6 +159,14 @@ export async function POST(request: NextRequest) {
       
       case 'toggleAudienceResults':
         newState = toggleAudienceResults(currentState);
+        break;
+      
+      case 'playFriendAudio':
+        newState = playFriendAudio(currentState);
+        break;
+      
+      case 'stopFriendAudio':
+        newState = stopFriendAudio(currentState);
         break;
       
       case 'endGame':

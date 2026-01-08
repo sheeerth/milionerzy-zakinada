@@ -19,11 +19,35 @@ export function getQuestionsByLevel(level: number): Question[] {
   return questions.filter(q => q.lvl === level);
 }
 
+// Fisher-Yates shuffle algorithm for better randomization
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export function getRandomQuestionByLevel(level: number, usedQuestionIds: number[] = []): Question | null {
   const availableQuestions = getQuestionsByLevel(level).filter(q => !usedQuestionIds.includes(q.id));
   if (availableQuestions.length === 0) return null;
-  const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-  return availableQuestions[randomIndex];
+  
+  // Shuffle available questions for better randomization
+  // This ensures more even distribution across multiple games
+  const shuffledQuestions = shuffleArray(availableQuestions);
+  
+  // Use crypto.getRandomValues if available for better randomness, otherwise fall back to Math.random
+  let randomIndex: number;
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const randomArray = new Uint32Array(1);
+    crypto.getRandomValues(randomArray);
+    randomIndex = randomArray[0] % shuffledQuestions.length;
+  } else {
+    randomIndex = Math.floor(Math.random() * shuffledQuestions.length);
+  }
+  
+  return shuffledQuestions[randomIndex];
 }
 
 export function getQuestionForRound(round: number, usedQuestionIds: number[] = []): Question | null {
